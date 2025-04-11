@@ -20,5 +20,6 @@ public class HelloController {
   public HelloResponse sayHello() {
     String message = this.helloService.getGreeting();
     return new HelloResponse(message);
+    
   }
 }
