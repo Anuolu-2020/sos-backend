@@ -38,7 +38,7 @@ public class EmergencyServiceController implements EmergencyServiceApi {
     List<EmergencyServicesModel> emergencyServices = this.emergencyService.createEmergencyServices(requests);
 
     return ResponseEntity.ok(
-        ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices),
+        ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices), null, null,
             "Emergency services created successfully", request.getRequestURI()));
   }
 
@@ -49,16 +49,21 @@ public class EmergencyServiceController implements EmergencyServiceApi {
       @RequestParam(required = true) double latitude,
 
       @RequestParam(required = true) double radius,
+
+      @RequestParam(required = false, defaultValue = "1") int page,
+
+      @RequestParam(required = false, defaultValue = "5") int limit,
+
       HttpServletRequest request) throws ResourceNotFoundException {
 
     List<EmergencyServicesModel> emergencyServices = this.emergencyService
-        .findNearbyEmergencyServices(longitude, latitude, radius);
+        .findNearbyEmergencyServices(longitude, latitude, radius, limit, page);
 
     if (emergencyServices.size() == 0) {
       throw new ResourceNotFoundException("No nearby emergency services found for this coordinate");
     }
 
-    return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices),
+    return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices), page, limit,
         "Nearby Emergency services successfully fetched", request.getRequestURI()));
   }
 
