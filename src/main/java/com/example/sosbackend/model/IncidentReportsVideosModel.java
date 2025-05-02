@@ -1,10 +1,13 @@
-
 package com.example.sosbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "incident_reports_videos")
+@Data
 public class IncidentReportsVideosModel {
 
   @Id
@@ -13,12 +16,13 @@ public class IncidentReportsVideosModel {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "incident_report_id")
+  @JsonBackReference
   private IncidentReportsModel incidentReport;
 
-  @Column(name = "video_url", nullable = false)
-  private String videoUrl;
+  @Column(name = "url", nullable = false)
+  private String url;
 
-  @Column(name = "public_id")
-  private String publicId;
+  @Column(name = "key", nullable = false)
+  private String key;
 
 }
