@@ -4,6 +4,7 @@ public class ApiResponse<T> {
   private boolean success;
   private String message;
   private T data;
+  private PaginationMetadata metadata;
 
   public boolean isSuccess() {
     return success;
@@ -27,6 +28,14 @@ public class ApiResponse<T> {
 
   public void setData(T data) {
     this.data = data;
+  }
+
+  public PaginationMetadata getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(PaginationMetadata metadata) {
+    this.metadata = metadata;
   }
 
 }

@@ -51,10 +51,14 @@ public class EmergencyService {
 
   }
 
-  public List<EmergencyServicesModel> findNearbyEmergencyServices(double longitude, double latitude, double radius) {
+  public List<EmergencyServicesModel> findNearbyEmergencyServices(double longitude, double latitude, double radius,
+      int limit, int page) {
+
+    // page offset
+    int offset = ((page - 1) * limit);
 
     return emergencyServiceRepository.findNearbyEmergencyServices(longitude,
-        latitude, radius);
+        latitude, radius, limit, offset);
     // .orElseThrow(() -> new ResourceNotFoundException("No nearby emergency
     // services found for this coordinate"));
   }
