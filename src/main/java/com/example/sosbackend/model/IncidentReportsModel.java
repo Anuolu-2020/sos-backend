@@ -12,6 +12,8 @@ import org.hibernate.annotations.Check;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 
 @Table(name = "incident_reports", indexes = {
@@ -38,10 +40,12 @@ public class IncidentReportsModel {
   private boolean isAddressed;
 
   @OneToMany(mappedBy = "incidentReport", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-  private List<IncidentReportsVideosModel> videoUrls = new ArrayList<>();
+  @JsonManagedReference
+  private List<IncidentReportsVideosModel> videos = new ArrayList<>();
 
   @OneToMany(mappedBy = "incidentReport", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-  private List<IncidentReportsPicturesModel> pictureUrls = new ArrayList<>();
+  @JsonManagedReference
+  private List<IncidentReportsPicturesModel> pictures = new ArrayList<>();
 
   @Column(columnDefinition = "geography(Point,4326)")
   private Point<G2D> coordinates;
