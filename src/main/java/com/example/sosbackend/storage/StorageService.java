@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.api.ApiResponse;
 import com.cloudinary.utils.ObjectUtils;
-
-import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
 public class StorageService {
@@ -22,13 +21,13 @@ public class StorageService {
 
   private final Cloudinary cloudinary;
 
-  private final Dotenv dotenv;
+  private final Environment env;
 
-  public StorageService() {
+  public StorageService(Environment env) {
 
-    this.dotenv = Dotenv.load();
+    this.env = env;
 
-    this.cloudinary = new Cloudinary(this.dotenv.get("CLOUDINARY_URL"));
+    this.cloudinary = new Cloudinary(this.env.getProperty("cloudinary.url"));
   }
 
   public Map uploadFile(MultipartFile file, String folderName) {
