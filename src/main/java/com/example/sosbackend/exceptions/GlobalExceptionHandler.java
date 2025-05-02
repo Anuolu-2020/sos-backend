@@ -17,7 +17,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
@@ -29,7 +29,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({ MethodArgumentNotValidException.class, ConstraintViolationException.class,
       UnrecognizedPropertyException.class, DataIntegrityViolationException.class, ResourceNotFoundException.class,
-      MissingServletRequestParameterException.class
+      MissingServletRequestParameterException.class,
+      MissingServletRequestPartException.class
   })
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -61,6 +62,8 @@ public class GlobalExceptionHandler {
       errors.add(notfoundEx.getMessage());
     } else if (ex instanceof MissingServletRequestParameterException missingRequestParamEx) {
       errors.add(missingRequestParamEx.getMessage());
+    } else if (ex instanceof MissingServletRequestPartException missingRequestPartEx) {
+      errors.add(missingRequestPartEx.getMessage());
     }
 
     body.put("success", false);
