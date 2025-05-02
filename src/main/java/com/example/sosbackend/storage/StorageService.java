@@ -1,10 +1,11 @@
 package com.example.sosbackend.storage;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.api.ApiResponse;
@@ -12,7 +13,12 @@ import com.cloudinary.utils.ObjectUtils;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+@Service
 public class StorageService {
+
+  public final String PICTURE_FOLDER_NAME = "pictures";
+
+  public final String VIDEO_FOLDER_NAME = "videos";
 
   private final Cloudinary cloudinary;
 
@@ -25,31 +31,29 @@ public class StorageService {
     this.cloudinary = new Cloudinary(this.dotenv.get("CLOUDINARY_URL"));
   }
 
-  public Map uploadFile(File file) {
+  public Map uploadFile(MultipartFile file, String folderName) {
 
     try {
-
       // Upload the image
       Map params = ObjectUtils.asMap(
           "use_filename", true,
           "unique_filename", true,
-          "overwrite", true);
+          "overwrite", true,
+          "folder", folderName,
+          "resource_type", "auto");
 
-      return this.cloudinary.uploader().upload(file,
+      return this.cloudinary.uploader().upload(file.getBytes(),
           params);
-
     } catch (IOException e) {
-
       e.printStackTrace();
-
-      return Collections.emptyMap();
+      return null;
     }
   }
 
-  public ApiResponse deleteFile(List<String> fileIds, String resourceType) throws Exception {
+  public ApiResponse deleteFiles(List<String> filesKey, String resourceType) throws Exception {
 
     Map options = ObjectUtils.asMap("resource_type", resourceType);
 
-    return this.cloudinary.api().deleteResources(fileIds, options);
+    return this.cloudinary.api().deleteResources(filesKey, options);
   }
 }
