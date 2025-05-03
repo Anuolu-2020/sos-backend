@@ -12,12 +12,21 @@ import lombok.Data;
 
 @Data
 public class IncidentReportResponseDTO {
+
   private Long id;
+
   private String typeOfIncident;
+
   private String description;
+
+  private Boolean isAddressed;
+
   private List<IncidentReportsPicturesModel> pictures;
+
   private List<IncidentReportsVideosModel> videos;
+
   private double longitude;
+
   private double latitude;
 
   public static IncidentReportResponseDTO from(IncidentReportsModel model) {
@@ -33,6 +42,8 @@ public class IncidentReportResponseDTO {
     dto.setPictures(model.getPictures());
 
     dto.setVideos(model.getVideos());
+
+    dto.setIsAddressed(model.getIsAddressed());
 
     if (model.getCoordinates() != null) {
       dto.setLongitude(model.getCoordinates().getPosition().getLon());
