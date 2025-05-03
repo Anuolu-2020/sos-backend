@@ -55,6 +55,8 @@ public class IncidentReportService {
     // Set incident report description field
     incidentReport.setDescription(request.getDescription());
 
+    incidentReport.setIsAddressed(false);
+
     // make the coordinate with the right coordinate reference system
     Point<G2D> coordinates = point(CoordinateReferenceSystems.WGS84,
         g(request.getLongitude(), request.getLatitude()));
