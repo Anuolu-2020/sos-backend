@@ -37,7 +37,7 @@ public class IncidentReportsModel {
 
   @Column(name = "is_addressed", nullable = false)
   @ColumnDefault("false")
-  private boolean isAddressed;
+  private Boolean isAddressed;
 
   @OneToMany(mappedBy = "incidentReport", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @JsonManagedReference
