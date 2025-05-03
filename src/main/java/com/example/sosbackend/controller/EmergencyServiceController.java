@@ -38,7 +38,7 @@ public class EmergencyServiceController implements EmergencyServiceApi {
     List<EmergencyServicesModel> emergencyServices = this.emergencyService.createEmergencyServices(requests);
 
     return ResponseEntity.ok(
-        ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices), null, null,
+        ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices), 0, 0,
             "Emergency services created successfully", request.getRequestURI()));
   }
 
