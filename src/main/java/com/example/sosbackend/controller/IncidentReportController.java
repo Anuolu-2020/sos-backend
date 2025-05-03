@@ -49,7 +49,7 @@ public class IncidentReportController implements IncidentReportApi {
 
     return ResponseEntity.ok(
         ResponseUtil.response(IncidentReportResponseDTO.from(incidentReport),
-            null, null,
+            0, 0,
             "Incident report created successfully", request.getRequestURI()));
 
   }
