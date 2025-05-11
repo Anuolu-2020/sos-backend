@@ -63,4 +63,17 @@ public class EmergencyService {
     // services found for this coordinate"));
   }
 
+  public List<EmergencyServicesModel> findNearbyPoliceStations(double longitude, double latitude, double radius,
+      int limit, int page) {
+    int offset = ((page - 1) * limit);
+    return emergencyServiceRepository.findNearbyPoliceStations(longitude,
+        latitude, radius, limit, offset);
+  }
+
+  public List<EmergencyServicesModel> findNearbyHospitals(double longitude, double latitude, double radius,
+      int limit, int page) {
+    int offset = ((page - 1) * limit);
+    return emergencyServiceRepository.findNearbyHospitals(longitude,
+        latitude, radius, limit, offset);
+  }
 }
