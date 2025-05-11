@@ -17,4 +17,20 @@ public interface EmergencyServiceRepository extends JpaRepository<EmergencyServi
       @Param("radius") double radius,
       @Param("limit") int limit,
       @Param("offset") int offset);
+
+  @Query(value = "SELECT * FROM emergency_services WHERE type = 'POLICE' AND ST_DWithin(coordinates, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326), :radius) ORDER BY coordinates <-> ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326) LIMIT :limit OFFSET :offset", nativeQuery = true)
+  List<EmergencyServicesModel> findNearbyPoliceStations(
+      @Param("longitude") double longitude,
+      @Param("latitude") double latitude,
+      @Param("radius") double radius,
+      @Param("limit") int limit,
+      @Param("offset") int offset);
+
+  @Query(value = "SELECT * FROM emergency_services WHERE type = 'HOSPITAL' AND ST_DWithin(coordinates, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326), :radius) ORDER BY coordinates <-> ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326) LIMIT :limit OFFSET :offset", nativeQuery = true)
+  List<EmergencyServicesModel> findNearbyHospitals(
+      @Param("longitude") double longitude,
+      @Param("latitude") double latitude,
+      @Param("radius") double radius,
+      @Param("limit") int limit,
+      @Param("offset") int offset);
 }

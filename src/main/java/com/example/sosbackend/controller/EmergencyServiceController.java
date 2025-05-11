@@ -66,9 +66,44 @@ public class EmergencyServiceController implements EmergencyServiceApi {
     return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices), page, limit,
         "Nearby Emergency services successfully fetched", request.getRequestURI()));
   }
-/*
- * how do I implement fetching police stations and hospitals based on their
- * cooordinates. each with their respective routes
- */
 
+  @GetMapping("/policeStations")
+  public ResponseEntity<ApiResponse<List<EmergencyServiceResponseDTO>>> findNearbyPoliceStations(
+      @RequestParam(required = true) double longitude,
+      @RequestParam(required = true) double latitude,
+      @RequestParam(required = true) double radius,
+      @RequestParam(required = false, defaultValue = "1") int page,
+      @RequestParam(required = false, defaultValue = "5") int limit,
+      HttpServletRequest request) throws ResourceNotFoundException {
+
+    List<EmergencyServicesModel> policeStations = this.emergencyService
+        .findNearbyPoliceStations(longitude, latitude, radius, limit, page);
+
+    if (policeStations.isEmpty()) {
+      throw new ResourceNotFoundException("No nearby police stations found for this coordinate");
+    }
+
+    return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(policeStations), page, limit,
+        "Nearby police stations successfully fetched", request.getRequestURI()));
+  }
+
+  @GetMapping("/hospitals")
+  public ResponseEntity<ApiResponse<List<EmergencyServiceResponseDTO>>> findNearbyHospitals(
+      @RequestParam(required = true) double longitude,
+      @RequestParam(required = true) double latitude,
+      @RequestParam(required = true) double radius,
+      @RequestParam(required = false, defaultValue = "1") int page,
+      @RequestParam(required = false, defaultValue = "5") int limit,
+      HttpServletRequest request) throws ResourceNotFoundException {
+
+    List<EmergencyServicesModel> hospitals = this.emergencyService
+        .findNearbyHospitals(longitude, latitude, radius, limit, page);
+
+    if (hospitals.isEmpty()) {
+      throw new ResourceNotFoundException("No nearby hospitals found for this coordinate");
+    }
+
+    return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(hospitals), page, limit,
+        "Nearby hospitals successfully fetched", request.getRequestURI()));
+  }
 }
