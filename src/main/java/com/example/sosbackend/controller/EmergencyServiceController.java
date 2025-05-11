@@ -66,5 +66,9 @@ public class EmergencyServiceController implements EmergencyServiceApi {
     return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices), page, limit,
         "Nearby Emergency services successfully fetched", request.getRequestURI()));
   }
+/*
+ * how do I implement fetching police stations and hospitals based on their
+ * cooordinates. each with their respective routes
+ */
 
 }
