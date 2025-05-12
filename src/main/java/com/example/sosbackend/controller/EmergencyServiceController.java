@@ -54,56 +54,20 @@ public class EmergencyServiceController implements EmergencyServiceApi {
 
       @RequestParam(required = false, defaultValue = "5") int limit,
 
+      @RequestParam(required = false, defaultValue = "all") String type,
+
       HttpServletRequest request) throws ResourceNotFoundException {
 
     List<EmergencyServicesModel> emergencyServices = this.emergencyService
-        .findNearbyEmergencyServices(longitude, latitude, radius, limit, page);
+        .findNearbyEmergencyServices(longitude, latitude, radius, limit, page, type);
 
     if (emergencyServices.size() == 0) {
       throw new ResourceNotFoundException("No nearby emergency services found for this coordinate");
     }
 
     return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(emergencyServices), page, limit,
-        "Nearby Emergency services successfully fetched", request.getRequestURI()));
+        "Nearby " + (type.equals("all") ? "Emergency services" : type) + " successfully fetched",
+        request.getRequestURI()));
   }
 
-  @GetMapping("/policeStations")
-  public ResponseEntity<ApiResponse<List<EmergencyServiceResponseDTO>>> findNearbyPoliceStations(
-      @RequestParam(required = true) double longitude,
-      @RequestParam(required = true) double latitude,
-      @RequestParam(required = true) double radius,
-      @RequestParam(required = false, defaultValue = "1") int page,
-      @RequestParam(required = false, defaultValue = "5") int limit,
-      HttpServletRequest request) throws ResourceNotFoundException {
-
-    List<EmergencyServicesModel> policeStations = this.emergencyService
-        .findNearbyPoliceStations(longitude, latitude, radius, limit, page);
-
-    if (policeStations.isEmpty()) {
-      throw new ResourceNotFoundException("No nearby police stations found for this coordinate");
-    }
-
-    return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(policeStations), page, limit,
-        "Nearby police stations successfully fetched", request.getRequestURI()));
-  }
-
-  @GetMapping("/hospitals")
-  public ResponseEntity<ApiResponse<List<EmergencyServiceResponseDTO>>> findNearbyHospitals(
-      @RequestParam(required = true) double longitude,
-      @RequestParam(required = true) double latitude,
-      @RequestParam(required = true) double radius,
-      @RequestParam(required = false, defaultValue = "1") int page,
-      @RequestParam(required = false, defaultValue = "5") int limit,
-      HttpServletRequest request) throws ResourceNotFoundException {
-
-    List<EmergencyServicesModel> hospitals = this.emergencyService
-        .findNearbyHospitals(longitude, latitude, radius, limit, page);
-
-    if (hospitals.isEmpty()) {
-      throw new ResourceNotFoundException("No nearby hospitals found for this coordinate");
-    }
-
-    return ResponseEntity.ok(ResponseUtil.response(EmergencyServiceResponseDTO.from(hospitals), page, limit,
-        "Nearby hospitals successfully fetched", request.getRequestURI()));
-  }
 }
