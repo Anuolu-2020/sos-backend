@@ -52,28 +52,47 @@ public class EmergencyService {
   }
 
   public List<EmergencyServicesModel> findNearbyEmergencyServices(double longitude, double latitude, double radius,
-      int limit, int page) {
+      int limit, int page, String type) {
+
+    List<EmergencyServicesModel> emergencyServices = new ArrayList<EmergencyServicesModel>();
 
     // page offset
     int offset = ((page - 1) * limit);
 
-    return emergencyServiceRepository.findNearbyEmergencyServices(longitude,
-        latitude, radius, limit, offset);
+    switch (type.toLowerCase()) {
+      case "policestations":
+        for (EmergencyServicesModel policeStation : emergencyServiceRepository.findNearbyPoliceStations(longitude,
+            latitude, radius, limit, offset)) {
+          emergencyServices.add(policeStation);
+        }
+        break;
+      case "hospitals":
+        for (EmergencyServicesModel hospital : emergencyServiceRepository.findNearbyHospitals(longitude, latitude,
+            radius, limit, offset)) {
+          emergencyServices.add(hospital);
+        }
+        break;
+      case "firestations":
+
+        for (EmergencyServicesModel fireStation : emergencyServiceRepository.findNearbyFireStations(longitude, latitude,
+            radius, limit, offset)) {
+          emergencyServices.add(fireStation);
+        }
+
+        break;
+      default:
+
+        for (EmergencyServicesModel emergencyService : emergencyServiceRepository.findNearbyEmergencyServices(longitude,
+            latitude,
+            radius, limit, offset)) {
+          emergencyServices.add(emergencyService);
+        }
+
+    }
+
+    return emergencyServices;
     // .orElseThrow(() -> new ResourceNotFoundException("No nearby emergency
     // services found for this coordinate"));
   }
 
-  public List<EmergencyServicesModel> findNearbyPoliceStations(double longitude, double latitude, double radius,
-      int limit, int page) {
-    int offset = ((page - 1) * limit);
-    return emergencyServiceRepository.findNearbyPoliceStations(longitude,
-        latitude, radius, limit, offset);
-  }
-
-  public List<EmergencyServicesModel> findNearbyHospitals(double longitude, double latitude, double radius,
-      int limit, int page) {
-    int offset = ((page - 1) * limit);
-    return emergencyServiceRepository.findNearbyHospitals(longitude,
-        latitude, radius, limit, offset);
-  }
 }
