@@ -19,6 +19,7 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.Valid;
 
@@ -37,5 +38,8 @@ public interface EmergencyServiceApi {
 
       @Min(value = 1) @Parameter(description = "Optional resource page number", required = false) int page,
       @Min(value = 1) @Max(value = 10) @Parameter(description = "Optional resource limit number", required = false) int limit,
+
+      @Parameter(description = "Type of emergency service (policeStations, fireStations, hospitals)", required = false) @Pattern(regexp = "policeStations|fireStations|hospitals|all") String type,
+
       HttpServletRequest request) throws ResourceNotFoundException;
 }
