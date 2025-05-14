@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.sosbackend.dto.CreateIncidentReportRequest;
 import com.example.sosbackend.dto.DeleteIncidentReportRequest;
@@ -47,4 +48,10 @@ public interface IncidentReportApi {
   public ResponseEntity<Map<String, Object>> deleteIncidentReports(
       @RequestBody @Valid DeleteIncidentReportRequest deleteIncidentReportRequest)
       throws Exception;
+
+  @Operation(summary = "Mark incident as addressed", description = "Updates the isAddressed status to true for a specific incident")
+    ResponseEntity<ApiResponse<String>> markIncidentAsAddressed(
+            @PathVariable @Min(1) @Parameter(description = "ID of the incident to address") Long id,
+            HttpServletRequest request) throws ResourceNotFoundException;    
+ 
 }
