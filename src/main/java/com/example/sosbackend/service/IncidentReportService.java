@@ -44,11 +44,12 @@ public class IncidentReportService {
     List<IncidentReportsPicturesModel> incidentReportsPictures = new ArrayList<>();
     List<IncidentReportsVideosModel> incidentReportsVideos = new ArrayList<>();
 
-    // Collect all pictures into a list
+    // Collect all pictures into a list - pictures are required so this will never
+    // be null
     List<MultipartFile> pictures = request.getPictures();
 
-    // Collect all videos into a list
-    List<MultipartFile> videos = request.getPictures();
+    // Collect all videos into a list - videos are optional
+    List<MultipartFile> videos = request.getVideos();
 
     // Set incident report type of incident field
     incidentReport.setTypeOfIncident(request.getTypeOfIncident());
@@ -81,27 +82,27 @@ public class IncidentReportService {
 
       // Add each uploaded picture to the pictures array list
       incidentReportsPictures.add(incidentReportsPicture);
-
     }
 
-    // Upload incident report videos
-    for (MultipartFile video : videos) {
-      IncidentReportsVideosModel incidentReportsVideo = new IncidentReportsVideosModel();
+    // Upload incident report videos if videos are provided
+    if (videos != null && !videos.isEmpty()) {
+      for (MultipartFile video : videos) {
+        IncidentReportsVideosModel incidentReportsVideo = new IncidentReportsVideosModel();
 
-      Map uploadResponse = this.storageService.uploadFile(video, this.storageService.VIDEO_FOLDER_NAME);
+        Map uploadResponse = this.storageService.uploadFile(video, this.storageService.VIDEO_FOLDER_NAME);
 
-      // set uploaded video url
-      incidentReportsVideo.setUrl((String) uploadResponse.get("secure_url"));
+        // set uploaded video url
+        incidentReportsVideo.setUrl((String) uploadResponse.get("secure_url"));
 
-      // set uploaded video key
-      incidentReportsVideo.setKey((String) uploadResponse.get("public_id"));
+        // set uploaded video key
+        incidentReportsVideo.setKey((String) uploadResponse.get("public_id"));
 
-      // Link child to parent table
-      incidentReportsVideo.setIncidentReport(incidentReport);
+        // Link child to parent table
+        incidentReportsVideo.setIncidentReport(incidentReport);
 
-      // Add each uploaded video to the videos array list
-      incidentReportsVideos.add(incidentReportsVideo);
-
+        // Add each uploaded video to the videos array list
+        incidentReportsVideos.add(incidentReportsVideo);
+      }
     }
 
     // set all the pictures records for saving
@@ -112,7 +113,6 @@ public class IncidentReportService {
 
     // save the incident report along witn it's pictures and video
     return this.incidentReportRepository.save(incidentReport);
-
   }
 
   public List<IncidentReportsModel> findNearbyIncidents(double longitude, double latitude, double radius, int page,
@@ -133,8 +133,10 @@ public class IncidentReportService {
         .map(IncidentReportsPicturesModel::getKey)
         .toList();
 
+    // Handle videos - getVideos() might return an empty list if no videos were
+    // uploaded
     List<String> videoKeys = incidentReports.stream()
-        .flatMap(r -> r.getVideos().stream())
+        .flatMap(r -> r.getVideos() != null ? r.getVideos().stream() : List.<IncidentReportsVideosModel>of().stream())
         .map(IncidentReportsVideosModel::getKey)
         .toList();
 
@@ -147,11 +149,9 @@ public class IncidentReportService {
     }
 
     this.incidentReportRepository.deleteAllById(deleteIncidentReportRequest.getIncidentReportIds());
-
-    return;
   }
 
-    /**
+  /**
      * Marks an incident as addressed by setting isAddressed to true.
      * @throws ResourceNotFoundException if incident not found.
      */
@@ -162,4 +162,5 @@ public class IncidentReportService {
         incident.setIsAddressed(true);
         incidentReportRepository.save(incident);
     }
+
 }
