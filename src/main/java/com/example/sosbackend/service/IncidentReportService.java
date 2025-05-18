@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.sosbackend.dto.CreateIncidentReportRequest;
 import com.example.sosbackend.dto.DeleteIncidentReportRequest;
+import com.example.sosbackend.exceptions.ResourceNotFoundException;
 import com.example.sosbackend.model.IncidentReportsModel;
 import com.example.sosbackend.model.IncidentReportsPicturesModel;
 import com.example.sosbackend.model.IncidentReportsVideosModel;
@@ -149,4 +150,17 @@ public class IncidentReportService {
 
     this.incidentReportRepository.deleteAllById(deleteIncidentReportRequest.getIncidentReportIds());
   }
+
+  /**
+     * Marks an incident as addressed by setting isAddressed to true.
+     * @throws ResourceNotFoundException if incident not found.
+     */
+    @Transactional
+    public void markIncidentAsAddressed(Long id) throws ResourceNotFoundException {
+        IncidentReportsModel incident = incidentReportRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Incident not found with id: " + id));
+        incident.setIsAddressed(true);
+        incidentReportRepository.save(incident);
+    }
+
 }
