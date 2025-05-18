@@ -13,11 +13,14 @@ public class MultipartFileListValidator implements ConstraintValidator<ValidMult
 
   private String[] allowedTypes;
 
+  private boolean isOptional;
+
   private String message;
 
   @Override
   public void initialize(ValidMultipartFileList constraintAnnotation) {
     this.allowedTypes = constraintAnnotation.allowed();
+    this.isOptional = constraintAnnotation.optional();
     this.message = constraintAnnotation.message();
   }
 
@@ -28,6 +31,11 @@ public class MultipartFileListValidator implements ConstraintValidator<ValidMult
     // buildViolation(context, "No Files provided");
     // return false;
     // }
+
+    // If field is optional and no files are provided, it's valid
+    if (isOptional && (files == null || files.isEmpty())) {
+      return true;
+    }
 
     if (files == null || files.isEmpty()) {
       buildViolation(context, "At least one file must be provided");
