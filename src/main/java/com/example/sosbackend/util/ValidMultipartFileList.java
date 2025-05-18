@@ -23,4 +23,6 @@ public @interface ValidMultipartFileList {
   Class<? extends Payload>[] payload() default {};
 
   String[] allowed();
+
+  boolean optional() default false;
 }
